@@ -1,5 +1,5 @@
 {
-  "name": "loki",
+  "name": "@verkstedt/loki",
   "version": "0.9.1",
   "description": "Visual Regression Testing for react-storybook",
   "main": "index.js",
