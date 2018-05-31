@@ -6,6 +6,7 @@
   "bin": {
     "loki": "bin/loki"
   },
+  "private": false,
   "files": [
     "README.md",
     "LICENCE",
