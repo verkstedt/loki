@@ -70,12 +70,17 @@ function createChromeDockerExtTarget({
     debug(`Connecting to docker "${host}:${port}"`)
     await waitOnCDPAvailable(host, port);
     debug(`Connected to docker "${host}:${port}"`);
+
+    debug(`Closing all open tabs`);
+    const tabs = await CDP.List({ host, port });
+    await Promise.all(tabs.map(tab => CDP.Close({ host, port, id: tab.id })));
+    debug(`Closed all open tabs`);
   }
 
   // As we start the chrome docker image outside of loki
   // stopping will also happen outside of the container
   async function stop() {
-    debug('Disconnected to docker');
+    debug('Disconnected from docker container');
   }
 
   async function createNewDebuggerInstance() {
@@ -85,7 +90,7 @@ function createChromeDockerExtTarget({
     const client = await CDP({ host, port, target });
 
     client.close = () => {
-      debug('New closing tab');
+      debug(`Closing tab with target id ${target.id}`);
       return CDP.Close({ host, port, id: target.id });
     };
 
