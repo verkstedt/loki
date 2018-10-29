@@ -33,7 +33,6 @@ async function run() {
 
   try {
     await executor(args);
-    process.exit(0);
   } catch (err) {
     if (err instanceof MissingDependencyError || err instanceof ServerError) {
       die(err.message, err.instructions);

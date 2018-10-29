@@ -62,15 +62,15 @@ function createChromeDockerExtTarget({
     dockerUrl = baseUrl.replace('localhost', ip);
   } else if (baseUrl.indexOf('file:') === 0) {
     const staticPath = path.resolve(baseUrl.substr('file:'.length));
-    const staticMountPath = '/var/loki';
-    dockerUrl = `file://${staticMountPath}`;
+    dockerUrl = `file://${staticPath}`;
   }
 
   async function start() {
-    debug(`Connecting to docker "${host}:${port}"`)
+    debug(`Connecting to docker "${host}:${port}"`);
     await waitOnCDPAvailable(host, port);
     debug(`Connected to docker "${host}:${port}"`);
 
+    // open tabs will block the execution, so we close all open tabs on startup
     debug(`Closing all open tabs`);
     const tabs = await CDP.List({ host, port });
     await Promise.all(tabs.map(tab => CDP.Close({ host, port, id: tab.id })));
@@ -81,6 +81,11 @@ function createChromeDockerExtTarget({
   // stopping will also happen outside of the container
   async function stop() {
     debug('Disconnected from docker container');
+
+    debug(`Closing all open tabs`);
+    const tabs = await CDP.List({ host, port });
+    await Promise.all(tabs.map(tab => CDP.Close({ host, port, id: tab.id })));
+    debug(`Closed all open tabs`);
   }
 
   async function createNewDebuggerInstance() {
