@@ -61,8 +61,8 @@ function createChromeDockerExtTarget({
     }
     dockerUrl = baseUrl.replace('localhost', ip);
   } else if (baseUrl.indexOf('file:') === 0) {
-    const staticPath = path.resolve(baseUrl.substr('file:'.length));
-    dockerUrl = `file://${staticPath}`;
+    const staticMountPath = '/var/loki';
+    dockerUrl = `file://${staticMountPath}`;
   }
 
   async function start() {
